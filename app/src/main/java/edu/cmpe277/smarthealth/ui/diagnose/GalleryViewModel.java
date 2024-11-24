@@ -1,4 +1,4 @@
-package edu.cmpe277.smarthealth.ui.gallery;
+package edu.cmpe277.smarthealth.ui.diagnose;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

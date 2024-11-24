@@ -35,7 +35,8 @@ android {
 }
 
 dependencies {
-
+    implementation("com.google.guava:guava:31.0.1-android")
+    implementation("com.google.ai.client.generativeai:generativeai:0.7.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
