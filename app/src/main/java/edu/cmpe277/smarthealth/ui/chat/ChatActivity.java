@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +34,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText messageInput;
     private Button sendButton;
     private ScrollView chatScrollView;
-    private Button backButton;
+    private ImageButton backButton;
     private GenerativeModel generativeModel;
     private GenerativeModelFutures modelFutures;
     private Executor executor;
@@ -51,7 +52,7 @@ public class ChatActivity extends AppCompatActivity {
         backButton = findViewById(R.id.back_button);
 
         String apiKey = "AIzaSyApWdxQQBWBh_dX93oCz5mg_KuwrlT8fh8"; // Replace with your actual API key
-        generativeModel = new GenerativeModel("gemini-1.5-flash", apiKey);
+        generativeModel = new GenerativeModel("gemini-1.5-flash-8b", apiKey);
         modelFutures = GenerativeModelFutures.from(generativeModel);
         executor = Executors.newSingleThreadExecutor();
 
