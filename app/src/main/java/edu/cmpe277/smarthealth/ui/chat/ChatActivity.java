@@ -51,7 +51,7 @@ public class ChatActivity extends AppCompatActivity {
         chatScrollView = findViewById(R.id.chat_scroll_view);
         backButton = findViewById(R.id.back_button);
 
-        String apiKey = "AIzaSyApWdxQQBWBh_dX93oCz5mg_KuwrlT8fh8"; // Replace with your actual API key
+        String apiKey = "AIzaSyApWdxQQBWBh_dX93oCz5mg_KuwrlT8fh8";
         generativeModel = new GenerativeModel("gemini-1.5-flash-8b", apiKey);
         modelFutures = GenerativeModelFutures.from(generativeModel);
         executor = Executors.newSingleThreadExecutor();
@@ -62,7 +62,7 @@ public class ChatActivity extends AppCompatActivity {
             sendPrompt(initialPrompt);
         }
 
-        // Setup Send button listener
+
         setupSendButtonListener();
 
 
@@ -76,7 +76,7 @@ public class ChatActivity extends AppCompatActivity {
                 String prompt = messageInput.getText().toString().trim();
                 if (!prompt.isEmpty()) {
                     sendPrompt(prompt);
-                    messageInput.setText(""); // Clear the input field
+                    messageInput.setText("");
                 } else {
                     Toast.makeText(ChatActivity.this, "Please enter a prompt.", Toast.LENGTH_SHORT).show();
                 }
@@ -93,16 +93,16 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendPrompt(String prompt) {
-        // Append the user's message to the chat
+
         runOnUiThread(() -> appendMessageToChat("You: " + prompt));
 
-        // Create content object for Gemini API
+
         Content content = new Content.Builder().addText(prompt).build();
 
-        // Send the prompt to Gemini
+
         ListenableFuture<GenerateContentResponse> responseFuture = modelFutures.generateContent(content);
 
-        // Handle the response from Gemini
+
         Futures.addCallback(responseFuture, new FutureCallback<GenerateContentResponse>() {
             @Override
             public void onSuccess(GenerateContentResponse result) {
@@ -120,7 +120,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void appendMessageToChat(String message) {
-        // Append a message to the chat and scroll to the bottom
+
         chatTextView.append(message + "\n\n");
         chatScrollView.post(() -> chatScrollView.fullScroll(View.FOCUS_DOWN));
     }

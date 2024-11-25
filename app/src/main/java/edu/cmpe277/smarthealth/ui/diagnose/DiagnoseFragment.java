@@ -35,7 +35,7 @@ public class DiagnoseFragment extends Fragment {
     }
 
     private void sendPrompt() {
-        // Create the initial prompt based on user input
+
         String symptomsText = symptoms.getText().toString();
         String issueText = issue.getText().toString();
         String whenSymptomsStartsText = whenSymptomsStarts.getText().toString();
