@@ -52,8 +52,5 @@ dependencies {
 
     implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
 
-    val work_version = "2.9.1"
-    implementation("androidx.work:work-runtime:$work_version")
-
     implementation("com.google.android.gms:play-services-location:21.3.0")
 }

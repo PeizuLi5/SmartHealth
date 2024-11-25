@@ -6,9 +6,45 @@ import androidx.room.PrimaryKey;
 @Entity
 public class SleepEntry {
     @PrimaryKey
-    public long date;
+    private long date;
 
-    public int hours;
+    private int hours;
 
-    public int minutes;
+    private int minutes;
+
+    public SleepEntry(){
+        date = 0;
+        hours = 0;
+        minutes = 0;
+    }
+
+    public SleepEntry(long date, int hour, int minutes){
+        this.date = date;
+        this.hours = hour;
+        this.minutes = minutes;
+    }
+
+    public int getMinutes() {
+        return minutes;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public void setHours(int hours) {
+        this.hours = hours;
+    }
+
+    public void setMinutes(int minutes) {
+        this.minutes = minutes;
+    }
+
+    public int getHours() {
+        return hours;
+    }
+
+    public long getDate() {
+        return date;
+    }
 }
