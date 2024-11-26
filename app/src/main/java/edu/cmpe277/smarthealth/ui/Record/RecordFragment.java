@@ -1,4 +1,4 @@
-package edu.cmpe277.smarthealth.ui.slideshow;
+package edu.cmpe277.smarthealth.ui.Record;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

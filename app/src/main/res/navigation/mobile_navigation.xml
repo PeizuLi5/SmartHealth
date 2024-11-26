@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="edu.cmpe277.smarthealth.ui.slideshow.RecordFragment"
+        android:name="edu.cmpe277.smarthealth.ui.Record.RecordFragment"
         android:label="@string/menu_record"
         tools:layout="@layout/fragment_record" />
 </navigation>

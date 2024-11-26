@@ -289,13 +289,16 @@ public class SleepService extends Service implements SensorEventListener {
             int sleepMinutes = (int) (duration / (1000 * 60));
 
             if (existingEntry != null) {
-                int totalMinutes = existingEntry.getHours() * 60 + existingEntry.getMinutes() + sleepMinutes;
-                existingEntry.setHours(totalMinutes / 60);
-                existingEntry.setMinutes(totalMinutes % 60);
+                int totalMinutes = existingEntry.hours * 60 + existingEntry.minutes + sleepMinutes;
+                existingEntry.hours = totalMinutes / 60;
+                existingEntry.minutes = totalMinutes % 60;
 
                 appDB.sleepDao().insertOrUpdate(existingEntry);
             } else {
-                SleepEntry newEntry = new SleepEntry(date, sleepMinutes/60, sleepMinutes%60);
+                SleepEntry newEntry = new SleepEntry();
+                newEntry.date = date;
+                newEntry.hours = sleepMinutes / 60;
+                newEntry.minutes = sleepMinutes % 60;
                 appDB.sleepDao().insertOrUpdate(newEntry);
             }
         });

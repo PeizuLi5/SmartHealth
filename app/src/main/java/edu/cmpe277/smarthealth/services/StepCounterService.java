@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -20,19 +21,24 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.cmpe277.smarthealth.R;
 import edu.cmpe277.smarthealth.database.AppDB;
 import edu.cmpe277.smarthealth.database.StepEntry;
+import edu.cmpe277.smarthealth.receiver.DateChangeReceiver;
 
 public class StepCounterService extends Service implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor stepCountSensor;
 
     private int initialStep = -1;
+    private int lastStepCount = -1;
     private int totalStepCurrentDay = 0;
     private long currentDateStartTime;
 
@@ -40,6 +46,7 @@ public class StepCounterService extends Service implements SensorEventListener {
 
     private Handler handler;
     private Runnable dayChangeRunnable;
+    private DateChangeReceiver dateChangeReceiver;
 
     private static final String CHANNEL_ID = "StepCounterChannel";
     private static final String TAG = "StepCounterService";
@@ -57,6 +64,18 @@ public class StepCounterService extends Service implements SensorEventListener {
         initializeStepCounter();
 
         setupDayChangeHandler();
+
+        registerDateChangeReceiver();
+    }
+
+    private void registerDateChangeReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_DATE_CHANGED);
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+
+        dateChangeReceiver = new DateChangeReceiver(this);
+        registerReceiver(dateChangeReceiver, filter);
     }
 
     private void setupDayChangeHandler() {
@@ -65,7 +84,7 @@ public class StepCounterService extends Service implements SensorEventListener {
             @Override
             public void run() {
                 long current = System.currentTimeMillis();
-                if(currentDateStartTime < getStartOfDay(current)){
+                if (currentDateStartTime < getStartOfDay(current)) {
                     saveSteps();
                     resetCounter();
 
@@ -89,7 +108,13 @@ public class StepCounterService extends Service implements SensorEventListener {
 
                 initialStep = sharedPreferences.getInt("initialStep", -1);
                 totalStepCurrentDay = sharedPreferences.getInt("totalStep", 0);
-                currentDateStartTime = sharedPreferences.getLong("currentDate", System.currentTimeMillis());
+                lastStepCount = sharedPreferences.getInt("lastStepCount", -1);
+                currentDateStartTime = sharedPreferences.getLong("currentDate", getStartOfDay(System.currentTimeMillis()));
+
+                if (currentDateStartTime == -1) {
+                    currentDateStartTime = getStartOfDay(System.currentTimeMillis());
+                    sharedPreferences.edit().putLong("currentDate", currentDateStartTime).apply();
+                }
 
                 if(currentDateStartTime < getStartOfDay(System.currentTimeMillis())){
                     saveSteps();
@@ -100,24 +125,50 @@ public class StepCounterService extends Service implements SensorEventListener {
     }
 
     private void resetCounter() {
-        initialStep = -1;
+        initialStep = sharedPreferences.getInt("lastStepCount", -1);
         totalStepCurrentDay = 0;
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("initialStep");
-        editor.putInt("totalStep", 0);
+        editor.putInt("initialStep", initialStep);
+        editor.putInt("totalStep", totalStepCurrentDay);
         editor.apply();
+
+        broadcastCurrentStep();
     }
 
     private void saveSteps() {
+        Log.d(TAG, "Saving steps for date: " + formatDate(currentDateStartTime) + ", steps: " + totalStepCurrentDay);
         AppDB appDB = AppDB.getInstance(getApplicationContext());
         long date = currentDateStartTime;
 
+        int lastStepCount = sharedPreferences.getInt("lastStepCount", -1);
+        if (lastStepCount == -1 || initialStep == -1) {
+            Log.e(TAG, "Cannot save steps: invalid step counts");
+            return;
+        }
+
+        int totalStepsForDay = lastStepCount - initialStep;
+        Log.d(TAG, "Saving steps for date: " + formatDate(date) + ", steps: " + totalStepsForDay);
+
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
-            StepEntry stepEntry = new StepEntry(date, totalStepCurrentDay);
-            appDB.stepDao().insertOrUpdate(stepEntry);
+            try {
+                StepEntry stepEntry = new StepEntry();
+                stepEntry.date = date;
+                stepEntry.steps = totalStepsForDay;
+                appDB.stepDao().insertOrUpdate(stepEntry);
+                Log.d(TAG, "Steps saved to database.");
+            }
+            catch (Exception e) {
+                Log.e(TAG, "Error saving steps to database: " + e.getMessage());
+                e.printStackTrace();
+            }
         });
+    }
+
+    private String formatDate(long timestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(new Date(timestamp));
     }
 
     private void startForegroundService(){
@@ -150,12 +201,21 @@ public class StepCounterService extends Service implements SensorEventListener {
             sensorManager.unregisterListener(this);
         }
         Log.d(TAG, "StepCounterService stopped.");
+
+        if (dateChangeReceiver != null) {
+            unregisterReceiver(dateChangeReceiver);
+        }
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor == stepCountSensor) {
             int stepCount = (int) event.values[0];
+            lastStepCount = stepCount;
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("lastStepCount", lastStepCount);
+            editor.apply();
 
             if (initialStep == -1) {
                 initialStep = stepCount;
@@ -166,6 +226,17 @@ public class StepCounterService extends Service implements SensorEventListener {
             saveTotalSteps();
 
             broadcastCurrentStep();
+        }
+    }
+
+    public void onDateChanged() {
+        long current = System.currentTimeMillis();
+        if (currentDateStartTime < getStartOfDay(current)) {
+            saveSteps();
+            resetCounter();
+
+            currentDateStartTime = getStartOfDay(current);
+            sharedPreferences.edit().putLong("currentDate", currentDateStartTime).apply();
         }
     }
 

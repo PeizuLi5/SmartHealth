@@ -21,4 +21,7 @@ public interface StepDao {
 
     @Query("SELECT * FROM StepEntry WHERE date = :date LIMIT 1")
     LiveData<StepEntry> getStepCountLive(long date);
+
+    @Query("SELECT * FROM StepEntry ORDER BY date DESC")
+    List<StepEntry> getAllStepData();
 }

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +18,14 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import edu.cmpe277.smarthealth.database.AppDB;
+import edu.cmpe277.smarthealth.database.SleepEntry;
 import edu.cmpe277.smarthealth.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -26,11 +33,13 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private BroadcastReceiver broadcastReceiver;
 
-    private int totalStepsCurrent;
+    private long totalStepsCurrent;
     private int targetSteps = 8000;
 
     private TextView stepCountTextView;
     private CircularProgressIndicator stepProgressBar;
+    private TextView sleepStatusTextView;
+    private TextView sleepTimeTextView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -44,7 +53,11 @@ public class HomeFragment extends Fragment {
 
         stepProgressBar.setMax(targetSteps);
 
+        sleepStatusTextView = binding.sleepStatusTextView;
+        sleepTimeTextView = binding.sleepTimeTextView;
+
         loadCurrentStepCount();
+        loadPrevSleepTime();
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -62,6 +75,39 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    private void loadPrevSleepTime() {
+        AppDB appDB = AppDB.getInstance(requireContext());
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(() -> {
+            try {
+                SleepEntry sleepEntry = appDB.sleepDao().getSleepEntryMostRecent();
+
+                if(sleepEntry != null){
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+
+                    String dateString = dateFormat.format(new Date(sleepEntry.date));
+                    sleepStatusTextView.setText("Sleeping Status: " + dateString);
+                    int hours = sleepEntry.hours;
+                    int minutes = sleepEntry.minutes;
+                    String sleepTime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
+                    sleepTimeTextView.setText(sleepTime);
+                }
+                else {
+                    sleepStatusTextView.setText("Sleeping Status: No Data");
+                    sleepTimeTextView.setText("");
+                }
+            }
+            catch (Exception e){
+                requireActivity().runOnUiThread(() -> {
+                    sleepStatusTextView.setText("Error loading sleep data");
+                    sleepTimeTextView.setText("");
+                });
+                e.printStackTrace();
+            }
+        });
+    }
+
     private void loadCurrentStepCount() {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("StepCountPref", Context.MODE_PRIVATE);
         totalStepsCurrent = sharedPreferences.getInt("totalStep", 0);
@@ -76,7 +122,7 @@ public class HomeFragment extends Fragment {
             stepProgressBar.setIndicatorColor(Color.rgb(42, 219, 48));
         }
         else{
-            stepProgressBar.setProgress(totalStepsCurrent);
+            stepProgressBar.setProgress((int)totalStepsCurrent);
         }
     }
 

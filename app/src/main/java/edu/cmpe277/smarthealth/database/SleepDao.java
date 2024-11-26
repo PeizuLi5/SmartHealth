@@ -21,4 +21,11 @@ public interface SleepDao {
 
     @Query("SELECT * FROM SleepEntry WHERE date BETWEEN :startDate AND :endDate")
     List<SleepEntry> getSleepEntriesBetweenDatesNonLive (long startDate, long endDate);
+
+    @Query("SELECT * FROM SleepEntry ORDER BY date DESC LIMIT 1")
+    SleepEntry getSleepEntryMostRecent();
+
+    @Query("SELECT * FROM SleepEntry ORDER BY date DESC")
+    List<SleepEntry> getAllSleepData();
+
 }

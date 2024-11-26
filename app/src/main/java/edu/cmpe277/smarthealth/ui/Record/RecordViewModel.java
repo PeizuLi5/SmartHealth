@@ -1,4 +1,4 @@
-package edu.cmpe277.smarthealth.ui.slideshow;
+package edu.cmpe277.smarthealth.ui.Record;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
