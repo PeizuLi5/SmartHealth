@@ -15,6 +15,9 @@
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:fillColor">@color/purple_700</item>
         <item name="android:solidColor">@color/gray</item>
+
+        <item name="barAxisColor">@color/gray</item>
+        <item name="barTextColor">@color/black</item>
     </style>
 
     <style name="Theme.SmartHealth.NoActionBar">

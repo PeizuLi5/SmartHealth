@@ -50,6 +50,14 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receiver.SleepReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="edu.cmpe277.smarthealth.ACTION_SLEEP_SEGMENT_EVENT" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
