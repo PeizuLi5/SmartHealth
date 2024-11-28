@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -39,7 +40,6 @@ public class SleepService extends Service {
         startForegroundService();
 
         client = ActivityRecognition.getClient(this);
-
         pendingIntent = getSleepSegmentPendingIntent();
 
         requestSleepSegmentUpdates();

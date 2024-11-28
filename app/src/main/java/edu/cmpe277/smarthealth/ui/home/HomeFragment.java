@@ -16,16 +16,21 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.cmpe277.smarthealth.database.AppDB;
 import edu.cmpe277.smarthealth.database.SleepEntry;
+import edu.cmpe277.smarthealth.database.StepEntry;
 import edu.cmpe277.smarthealth.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -76,8 +81,47 @@ public class HomeFragment extends Fragment {
         LocalBroadcastManager.getInstance(requireContext())
                 .registerReceiver(broadcastReceiver, new IntentFilter("StepCountUpdate"));
 
+//        getAllData();
+
         return root;
     }
+
+//    private void getAllData() {
+//        AppDB appDB = AppDB.getInstance((requireContext()));
+//
+//        String googleAPIStr;
+//        int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(requireContext());
+//        if (status == ConnectionResult.SUCCESS) {
+//            googleAPIStr = "Yes Supported.";
+//        }
+//        else{
+//            googleAPIStr = "No, not supported.";
+//        }
+//
+//        ExecutorService executorService = Executors.newSingleThreadExecutor();
+//        executorService.execute(() -> {
+//            List<SleepEntry> sleeps = appDB.sleepDao().getAllSleepData();
+//            List<StepEntry> steps = appDB.stepDao().getAllStepData();
+//
+//            List<String> strList = new ArrayList<>();
+//
+//            if(sleeps != null){
+//                for (SleepEntry sleep : sleeps){
+//                    strList.add(sleep.date + ": " + sleep.hours + "hr " + sleep.minutes + "mins\n");
+//                }
+//            }
+//
+//            if(steps != null){
+//                for (StepEntry step : steps){
+//                    strList.add(step.date + ": " + step.steps + "\n");
+//                }
+//            }
+//            strList.add(googleAPIStr);
+//
+//            suggestionTextView.setText(strList.toString());
+//
+//        });
+//    }
 
     private void loadPrevSleepTime() {
         AppDB appDB = AppDB.getInstance(requireContext());

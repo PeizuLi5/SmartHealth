@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -22,6 +23,9 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.cmpe277.smarthealth.databinding.ActivityMainBinding;
 import edu.cmpe277.smarthealth.services.SleepService;
 import edu.cmpe277.smarthealth.services.StepCounterService;
@@ -30,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private static final int ACTIVITY_RECOGNITION_PERMISSION = 1;
+    private static final int ACTIVITY_RECOGNITION_POST_NOTIFICATION_PERMISSION = 1;
+
+    private List<String> permissions = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .setAnchorView(R.id.fab).show();
-            }
-        });
+
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -58,12 +57,22 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        int activityRecognitionPermission = ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.ACTIVITY_RECOGNITION);
-        if(activityRecognitionPermission != PackageManager.PERMISSION_GRANTED){
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+            permissions.add(Manifest.permission.ACTIVITY_RECOGNITION);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+
+        if(!permissions.isEmpty()){
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACTIVITY_RECOGNITION},
-                    ACTIVITY_RECOGNITION_PERMISSION);
+                    permissions.toArray(new String[0]),
+                    ACTIVITY_RECOGNITION_POST_NOTIFICATION_PERMISSION);
         }
         else{
             startStepCounterService();
@@ -74,8 +83,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == ACTIVITY_RECOGNITION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        boolean allPermissionGranted = true;
+        if (requestCode == ACTIVITY_RECOGNITION_POST_NOTIFICATION_PERMISSION) {
+            for(int i = 0; i < permissions.length; i++) {
+                int result = grantResults[i];
+
+                if(result != PackageManager.PERMISSION_GRANTED){
+                    allPermissionGranted = false;
+                    break;
+                }
+            }
+
+            if (allPermissionGranted) {
                 startStepCounterService();
                 startSleepService();
             }
