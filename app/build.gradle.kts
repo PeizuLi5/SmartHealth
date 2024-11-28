@@ -53,4 +53,6 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
 
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.ai.client.generativeai:generativeai:0.7.0")
+    implementation("com.google.guava:guava:31.0.1-android")
 }

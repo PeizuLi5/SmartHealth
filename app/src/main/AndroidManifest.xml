@@ -30,6 +30,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.chat.ChatActivity" />
+
         <service
             android:name=".services.SleepService"
             android:enabled="true"
