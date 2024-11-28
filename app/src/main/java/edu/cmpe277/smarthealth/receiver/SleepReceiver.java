@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 import edu.cmpe277.smarthealth.database.AppDB;
 import edu.cmpe277.smarthealth.database.SleepEntry;
 
-public class SleepReceiver extends BroadcastReceiver {
+public class SleepReceiver extends BroadcastReceiver{
     public static final String ACTION_SLEEP_SEGMENT_EVENT = "edu.cmpe277.smarthealth.ACTION_SLEEP_SEGMENT_EVENT";
     private static final String TAG = "SleepReceiver";
 

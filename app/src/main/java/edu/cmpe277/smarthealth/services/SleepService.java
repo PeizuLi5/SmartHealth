@@ -6,10 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.IBinder;
@@ -25,7 +22,6 @@ import com.google.android.gms.location.SleepSegmentRequest;
 import com.google.android.gms.tasks.Task;
 
 import edu.cmpe277.smarthealth.R;
-import edu.cmpe277.smarthealth.database.AppDB;
 import edu.cmpe277.smarthealth.receiver.SleepReceiver;
 
 public class SleepService extends Service {
@@ -45,13 +41,6 @@ public class SleepService extends Service {
         client = ActivityRecognition.getClient(this);
 
         pendingIntent = getSleepSegmentPendingIntent();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(sleepReceiver, new IntentFilter(SleepReceiver.ACTION_SLEEP_SEGMENT_EVENT), Context.RECEIVER_EXPORTED);
-        }
-        else {
-            registerReceiver(sleepReceiver, new IntentFilter(SleepReceiver.ACTION_SLEEP_SEGMENT_EVENT));
-        }
 
         requestSleepSegmentUpdates();
     }
@@ -91,21 +80,15 @@ public class SleepService extends Service {
             return;
         }
 
-        SleepSegmentRequest request = SleepSegmentRequest.getDefaultSleepSegmentRequest();
-
-        Task<Void> task = client.requestSleepSegmentUpdates(pendingIntent, request);
+        Task<Void> task = client.requestSleepSegmentUpdates(pendingIntent, SleepSegmentRequest.getDefaultSleepSegmentRequest());
         task.addOnSuccessListener(aVoid -> Log.d(TAG, "Successfully requested sleep updates"))
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to request sleep updates: " + e.getMessage()));
     }
-
-    private final BroadcastReceiver sleepReceiver = new SleepReceiver();
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         removeSleepSegmentUpdates();
-
-        unregisterReceiver(sleepReceiver);
     }
 
     private void removeSleepSegmentUpdates() {

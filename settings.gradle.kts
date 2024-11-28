@@ -21,5 +21,12 @@ dependencyResolutionManagement {
     }
 }
 
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
 rootProject.name = "SmartHealth"
 include(":app")

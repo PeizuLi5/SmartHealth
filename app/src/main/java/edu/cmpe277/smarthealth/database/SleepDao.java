@@ -27,5 +27,4 @@ public interface SleepDao {
 
     @Query("SELECT * FROM SleepEntry ORDER BY date DESC")
     List<SleepEntry> getAllSleepData();
-
 }
