@@ -1,22 +1,21 @@
-package edu.cmpe277.smarthealth.ui.home;
+package edu.cmpe277.smarthealth.ui.settings;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class SettingsViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public SettingsViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Greetings, who are you?");
+        mText.setValue("Settings");
     }
 
     public LiveData<String> getText() {
         return mText;
     }
-
 
     private MutableLiveData<String> name = new MutableLiveData<>();
     private MutableLiveData<String> dateOfBirth = new MutableLiveData<>();

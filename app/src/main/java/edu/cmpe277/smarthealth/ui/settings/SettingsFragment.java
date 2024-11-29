@@ -1,4 +1,4 @@
-package edu.cmpe277.smarthealth.ui.home;
+package edu.cmpe277.smarthealth.ui.settings;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,30 +14,31 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import edu.cmpe277.smarthealth.databinding.FragmentHomeBinding;
 
-public class HomeFragment extends Fragment {
+import edu.cmpe277.smarthealth.databinding.FragmentSettingsBinding;
 
-    private FragmentHomeBinding binding;
+public class SettingsFragment extends Fragment {
+
+    private FragmentSettingsBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        SettingsViewModel settingsViewModel =
+                new ViewModelProvider(this).get(SettingsViewModel.class);
+        binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textSettings;
+        settingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        EditText nameEditText = binding.editTextName;
-        EditText dateOfBirthEditText = binding.editTextName;
-        EditText weightEditText = binding.editTextWeight;
-        EditText heightEditText = binding.editTextHeight;
-        EditText idNumberEditText = binding.editTextIdNumber;
-        EditText emailEditText = binding.editTextEmail;
-        EditText phoneNumberEditText = binding.editTextPhoneNumber;
-        Button submitButton = binding.buttonSubmit;
+        EditText nameEditText = binding.settingsEditTextName;
+        EditText dateOfBirthEditText = binding.settingsEditTextDob;
+        EditText weightEditText = binding.settingsEditTextWeight;
+        EditText heightEditText = binding.settingsEditTextHeight;
+        EditText idNumberEditText = binding.settingsEditTextIdNumber;
+        EditText emailEditText = binding.settingsEditTextEmail;
+        EditText phoneNumberEditText = binding.settingsEditTextPhoneNumber;
+        Button saveButton = binding.buttonSave;
 
 
         nameEditText.addTextChangedListener(new TextWatcher() {
@@ -48,7 +49,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                homeViewModel.setName(s.toString());
+                settingsViewModel.setName(s.toString());
             }
 
             @Override
@@ -65,7 +66,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                homeViewModel.setDateOfBirth(s.toString());
+                settingsViewModel.setDateOfBirth(s.toString());
             }
 
             @Override
@@ -82,7 +83,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                homeViewModel.setWeight(s.toString());
+                settingsViewModel.setWeight(s.toString());
             }
 
             @Override
@@ -99,7 +100,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                homeViewModel.setHeight(s.toString());
+                settingsViewModel.setHeight(s.toString());
             }
 
             @Override
@@ -116,7 +117,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                homeViewModel.setIdNumber(s.toString());
+                settingsViewModel.setIdNumber(s.toString());
             }
 
             @Override
@@ -133,7 +134,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                homeViewModel.setEmail(s.toString());
+                settingsViewModel.setEmail(s.toString());
             }
 
             @Override
@@ -150,7 +151,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                homeViewModel.setPhoneNumber(s.toString());
+                settingsViewModel.setPhoneNumber(s.toString());
             }
 
             @Override
@@ -159,18 +160,18 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        submitButton.setOnClickListener((v) -> {
+        saveButton.setOnClickListener((v) -> {
             // Placeholder: Validation logic if needed
 
-            saveInformation();
+            saveChanges();
 
-            Toast.makeText(getContext(), "Information submitted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Settings saved", Toast.LENGTH_SHORT).show();
         });
 
         return root;
     }
 
-    private void saveInformation() {
+    private void saveChanges() {
 
     }
 
