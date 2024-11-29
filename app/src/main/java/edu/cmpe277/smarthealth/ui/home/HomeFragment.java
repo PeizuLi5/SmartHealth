@@ -1,30 +1,49 @@
 package edu.cmpe277.smarthealth.ui.home;
 
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.system.Os;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.ai.client.generativeai.GenerativeModel;
+import com.google.ai.client.generativeai.java.GenerativeModelFutures;
+import com.google.ai.client.generativeai.type.Content;
+import com.google.ai.client.generativeai.type.GenerateContentResponse;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,6 +51,7 @@ import edu.cmpe277.smarthealth.database.AppDB;
 import edu.cmpe277.smarthealth.database.SleepEntry;
 import edu.cmpe277.smarthealth.database.StepEntry;
 import edu.cmpe277.smarthealth.databinding.FragmentHomeBinding;
+import io.noties.markwon.Markwon;
 
 public class HomeFragment extends Fragment {
 
@@ -46,7 +66,15 @@ public class HomeFragment extends Fragment {
     private TextView sleepStatusTextView;
     private TextView sleepTimeTextView;
 
+    private Executor executor;
+
     private TextView suggestionTextView;
+
+    private GenerativeModel generativeModel;
+    private GenerativeModelFutures modelFutures;
+
+    private static final String TAG = "smarthealth.HomeFragment";
+    private static final String API_KEY = "AIzaSyApWdxQQBWBh_dX93oCz5mg_KuwrlT8fh8";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,6 +82,11 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        executor = Executors.newSingleThreadExecutor();
+
+        generativeModel = new GenerativeModel("gemini-1.5-flash-8b", API_KEY);
+        modelFutures = GenerativeModelFutures.from(generativeModel);
 
         stepCountTextView = binding.stepCountTextView;
         stepProgressBar = binding.stepProgressBar;
@@ -64,6 +97,16 @@ public class HomeFragment extends Fragment {
         sleepTimeTextView = binding.sleepTimeTextView;
 
         suggestionTextView = binding.suggestionTextView;
+        suggestionTextView.setOnLongClickListener((view) -> {
+            if(suggestionTextView.getText() != null){
+                ClipboardManager clipboardManager = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("AI suggestion", suggestionTextView.getText());
+                clipboardManager.setPrimaryClip(clipData);
+            }
+
+            Toast.makeText(requireContext(), "Text copied", Toast.LENGTH_SHORT).show();
+            return true;
+        });
 
         loadCurrentStepCount();
         loadPrevSleepTime();
@@ -82,8 +125,50 @@ public class HomeFragment extends Fragment {
                 .registerReceiver(broadcastReceiver, new IntentFilter("StepCountUpdate"));
 
 //        getAllData();
+        getAiSuggestion();
 
         return root;
+    }
+
+    private void getAiSuggestion() {
+        String name = "Peizu";
+        int weight = 200;
+        int height = 180;
+
+        aiCall(name, weight, height);
+    }
+
+    private void aiCall(String name, int weight, int height) {
+        String prompt = "Hello, my name is " + name
+                + ", my weight is " + weight
+                + ", my height is " + height + ". Can you give me some health suggestion to me?\n"
+                + "I want the ouput to be something similar to the following:\n"
+                + "Hello <name>. According to your weight and height, your health condition is <your-consideration>.\n"
+                + "The following is my health suggestion: \n"
+                + "Based on the information your provided, the suggestion number of steps you should take is <your-steps-suggestion> steps. \n"
+                + "The number of hours that I recommend you to sleep is <your-hour-suggestion> hours. \n"
+                + "<Further suggestions you might have based on the information I provide. But remember, you must include the steps and sleep suggestion.> \n\n";
+
+        Content content = new Content.Builder().addText(prompt).build();
+        ListenableFuture<GenerateContentResponse> responseFuture = modelFutures.generateContent(content);
+
+        Futures.addCallback(responseFuture, new FutureCallback<GenerateContentResponse>(){
+
+            @Override
+            public void onSuccess(GenerateContentResponse result) {
+                String response = result.getText();
+                Markwon markwon = Markwon.create(requireContext());
+
+                requireActivity().runOnUiThread(() -> markwon.setMarkdown(suggestionTextView, response));
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                String response = t.getMessage();
+                requireActivity().runOnUiThread(() -> suggestionTextView.setText(response));
+            }
+        }, executor);
+
     }
 
 //    private void getAllData() {
