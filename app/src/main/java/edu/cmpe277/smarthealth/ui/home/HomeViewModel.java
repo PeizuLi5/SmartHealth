@@ -39,7 +39,7 @@ public class HomeViewModel extends ViewModel {
         this.dateOfBirth.setValue(dateOfBirth);
     }
 
-    public MutableLiveData<String> getDateOfBirth() {
+    public LiveData<String> getDateOfBirth() {
         return dateOfBirth;
     }
 

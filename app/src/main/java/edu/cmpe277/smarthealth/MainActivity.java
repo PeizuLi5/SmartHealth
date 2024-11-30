@@ -1,5 +1,8 @@
 package edu.cmpe277.smarthealth;
 
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -9,11 +12,13 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import edu.cmpe277.smarthealth.backend.PatientDbHelper;
 import edu.cmpe277.smarthealth.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +53,16 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        if (patientExists()) {
+            loadFirstPatient();
+            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+            if (navHostFragment != null) {
+                navController = navHostFragment.getNavController();
+                navController.navigate(R.id.nav_settings);
+            }
+        }
+
     }
 
     @Override
@@ -62,5 +77,36 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void loadFirstPatient() {
+        PatientDbHelper dbHelper = new PatientDbHelper(this); // Use 'this' as the context
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query("patients", new String[]{"_id"}, null, null, null, null, null, "1"); // Limit to 1 row
+        if (cursor.moveToFirst()) {
+            String patientId = cursor.getString(cursor.getColumnIndexOrThrow("_id"));
+            savePatientId(patientId);
+        }
+        cursor.close();
+        db.close();
+    }
+
+    private void savePatientId(String patientId) {
+        SharedPreferences sharedPreferences = getSharedPreferences("patient_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("patient_id", patientId);
+        editor.apply();
+    }
+
+    private boolean patientExists() {
+        PatientDbHelper dbHelper = new PatientDbHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM patients", null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        db.close();
+        return count > 0;
     }
 }

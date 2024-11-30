@@ -30,7 +30,7 @@ public class SettingsViewModel extends ViewModel {
         this.name.setValue(name);
     }
 
-    public LiveData<String> getName() {
+    public MutableLiveData<String> getName() {
         return name;
     }
 
@@ -46,7 +46,7 @@ public class SettingsViewModel extends ViewModel {
         this.weight.setValue(weight);
     }
 
-    public LiveData<String> getWeight() {
+    public MutableLiveData<String> getWeight() {
         return weight;
     }
 
@@ -54,7 +54,7 @@ public class SettingsViewModel extends ViewModel {
         this.height.setValue(height);
     }
 
-    public LiveData<String> getHeight() {
+    public MutableLiveData<String> getHeight() {
         return height;
     }
 
@@ -62,7 +62,7 @@ public class SettingsViewModel extends ViewModel {
         this.idNumber.setValue(idNumber);
     }
 
-    public LiveData<String> getIdNumber() {
+    public MutableLiveData<String> getIdNumber() {
         return idNumber;
     }
 
@@ -70,7 +70,7 @@ public class SettingsViewModel extends ViewModel {
         this.email.setValue(email);
     }
 
-    public LiveData<String> getEmail() {
+    public MutableLiveData<String> getEmail() {
         return email;
     }
 
@@ -78,7 +78,7 @@ public class SettingsViewModel extends ViewModel {
         this.phoneNumber.setValue(phoneNumber);
     }
 
-    public LiveData<String> getPhoneNumber() {
+    public MutableLiveData<String> getPhoneNumber() {
         return phoneNumber;
     }
 }

@@ -3,6 +3,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="settingsViewModel"
+            type="edu.cmpe277.smarthealth.ui.settings.SettingsViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,14 +31,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Name"
+            android:text="@={settingsViewModel.name}"
             app:layout_constraintTop_toBottomOf="@id/text_settings" />
 
         <EditText
-            android:id="@+id/settingsEditTextDob"
+            android:id="@+id/settingsEditTextDateOfBirth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Date of Birth"
-            android:inputType="numberSigned"
+            android:inputType="date"
+            android:text="@={settingsViewModel.dateOfBirth}"
             app:layout_constraintTop_toBottomOf="@id/settingsEditTextName" />
 
         <EditText
@@ -41,7 +49,8 @@
             android:layout_height="wrap_content"
             android:hint="Weight"
             android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@id/settingsEditTextDob" />
+            android:text="@={settingsViewModel.weight}"
+            app:layout_constraintTop_toBottomOf="@id/settingsEditTextDateOfBirth" />
 
         <EditText
             android:id="@+id/settingsEditTextHeight"
@@ -49,6 +58,7 @@
             android:layout_height="wrap_content"
             android:hint="Height"
             android:inputType="number"
+            android:text="@={settingsViewModel.height}"
             app:layout_constraintTop_toBottomOf="@id/settingsEditTextWeight" />
 
         <EditText
@@ -56,6 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="ID Number"
+            android:text="@={settingsViewModel.idNumber}"
             app:layout_constraintTop_toBottomOf="@id/settingsEditTextHeight" />
 
         <EditText
@@ -64,6 +75,7 @@
             android:layout_height="wrap_content"
             android:hint="Email"
             android:inputType="textEmailAddress"
+            android:text="@={settingsViewModel.email}"
             app:layout_constraintTop_toBottomOf="@id/settingsEditTextIdNumber" />
 
         <EditText
@@ -72,6 +84,7 @@
             android:layout_height="wrap_content"
             android:hint="Phone Number"
             android:inputType="phone"
+            android:text="@={settingsViewModel.phoneNumber}"
             app:layout_constraintTop_toBottomOf="@id/settingsEditTextEmail" />
 
         <Button
