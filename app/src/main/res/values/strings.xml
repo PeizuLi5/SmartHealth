@@ -16,4 +16,6 @@
         <item>Step</item>
         <item>Sleep</item>
     </string-array>
+
+    <string name="menu_settings">Settings</string>
 </resources>

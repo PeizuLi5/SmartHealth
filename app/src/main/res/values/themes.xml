@@ -28,4 +28,6 @@
     <style name="Theme.SmartHealth.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.SmartHealth.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.SmartHealth.BackOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>

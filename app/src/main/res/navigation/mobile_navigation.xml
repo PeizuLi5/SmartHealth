@@ -22,4 +22,11 @@
         android:name="edu.cmpe277.smarthealth.ui.Record.RecordFragment"
         android:label="@string/menu_record"
         tools:layout="@layout/fragment_record" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="edu.cmpe277.smarthealth.SettingsFragment"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/activity_settings" />
+  
 </navigation>

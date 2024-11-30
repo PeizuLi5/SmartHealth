@@ -50,6 +50,7 @@ import java.util.concurrent.Executors;
 import edu.cmpe277.smarthealth.database.AppDB;
 import edu.cmpe277.smarthealth.database.SleepEntry;
 import edu.cmpe277.smarthealth.database.StepEntry;
+
 import edu.cmpe277.smarthealth.databinding.FragmentHomeBinding;
 import io.noties.markwon.Markwon;
 
@@ -79,7 +80,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
