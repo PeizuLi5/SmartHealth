@@ -24,6 +24,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Chip fiveKChip, eightKChip, tenKChip;
 
     private Button saveButton, backButton;
+    private int steps = -1;
 
     private SharedPreferences sharedPreferences;
 
@@ -49,14 +50,17 @@ public class SettingsActivity extends AppCompatActivity {
 
         fiveKChip.setOnClickListener((l) ->{
             setStepTextView.setText("Set your step goal: 5000 steps");
+            steps = 5000;
         });
 
         eightKChip.setOnClickListener((l) ->{
             setStepTextView.setText("Set your step goal: 8000 steps");
+            steps = 8000;
         });
 
         tenKChip.setOnClickListener((l) ->{
             setStepTextView.setText("Set your step goal: 10000 steps");
+            steps = 10000;
         });
 
         nameEditText = binding.settingsEditTextName;
@@ -104,12 +108,8 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putString("DoB", dateOfBirthEditText.getText().toString());
             }
 
-            if(fiveKChip.isChecked())
-                editor.putInt("step", 5000);
-            else if(eightKChip.isChecked())
-                editor.putInt("step", 8000);
-            else if(tenKChip.isChecked())
-                editor.putInt("step", 10000);
+            if(steps != -1)
+                editor.putInt("step", steps);
             else
                 editor.putInt("step", 7000);
 

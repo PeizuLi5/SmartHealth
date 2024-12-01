@@ -1,5 +1,7 @@
 package edu.cmpe277.smarthealth.ui.home;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -60,7 +62,9 @@ public class HomeFragment extends Fragment {
     private BroadcastReceiver broadcastReceiver;
 
     private long totalStepsCurrent;
-    private int targetSteps = 8000;
+    private int targetSteps;
+
+    private SharedPreferences sharedPreferences;
 
     private TextView stepCountTextView;
     private CircularProgressIndicator stepProgressBar;
@@ -91,6 +95,8 @@ public class HomeFragment extends Fragment {
         stepCountTextView = binding.stepCountTextView;
         stepProgressBar = binding.stepProgressBar;
 
+        sharedPreferences = requireActivity().getSharedPreferences("UserInfo", MODE_PRIVATE);
+        targetSteps = sharedPreferences.getInt("step", 5000);
         stepProgressBar.setMax(targetSteps);
 
         sleepStatusTextView = binding.sleepStatusTextView;
@@ -134,11 +140,14 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         suggestionTextView.setText("");
+        targetSteps = sharedPreferences.getInt("step", 8000);
+        stepProgressBar.setMax(targetSteps);
+        updateProgreeBar();
         getAiSuggestion();
     }
 
     private void getAiSuggestion() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserInfo", MODE_PRIVATE);
 
         String name = sharedPreferences.getString("name", "User");
         int weight = sharedPreferences.getInt("weight", -1);
@@ -253,7 +262,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadCurrentStepCount() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("StepCountPref", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("StepCountPref", MODE_PRIVATE);
         totalStepsCurrent = sharedPreferences.getInt("totalStep", 0);
         stepCountTextView.setText("" + totalStepsCurrent);
 

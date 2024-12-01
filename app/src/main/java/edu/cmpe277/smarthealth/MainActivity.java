@@ -104,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        userTextView.setText(sharedPreferences.getString("name", "User"));
+        String output = sharedPreferences.getString("name", "User") + sharedPreferences.getInt("step", -1);
+        userTextView.setText(output);
     }
 
     @Override

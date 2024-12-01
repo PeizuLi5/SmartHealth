@@ -38,6 +38,7 @@ public class LaunchActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     private List<String> permissions = new ArrayList<>();
+    private int steps = -1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,14 +79,17 @@ public class LaunchActivity extends AppCompatActivity {
 
         fiveKChip.setOnClickListener((l) ->{
             setStepTextView.setText("Set your step goal: 5000 steps");
+            steps = 5000;
         });
 
         eightKChip.setOnClickListener((l) ->{
             setStepTextView.setText("Set your step goal: 8000 steps");
+            steps = 8000;
         });
 
         tenKChip.setOnClickListener((l) ->{
             setStepTextView.setText("Set your step goal: 10000 steps");
+            steps = 10000;
         });
 
         buttonSubmit = binding.buttonSubmit;
@@ -115,12 +119,8 @@ public class LaunchActivity extends AppCompatActivity {
                 editor.putString("DoB", editTextDoB.getText().toString());
             }
 
-            if(fiveKChip.isChecked())
-                editor.putInt("step", 5000);
-            else if(eightKChip.isChecked())
-                editor.putInt("step", 8000);
-            else if(tenKChip.isChecked())
-                editor.putInt("step", 10000);
+            if(steps != -1)
+                editor.putInt("step", steps);
             else
                 editor.putInt("step", 7000);
 
