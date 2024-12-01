@@ -15,69 +15,8 @@
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/editTextName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Name"
-        app:layout_constraintTop_toBottomOf="@id/text_home" />
-
-    <EditText
-        android:id="@+id/editTextDateOfBirth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Date of Birth"
-        android:inputType="date"
-        app:layout_constraintTop_toBottomOf="@id/editTextName" />
-
-    <EditText
-        android:id="@+id/editTextWeight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Weight"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@id/editTextDateOfBirth" />
-
-    <EditText
-        android:id="@+id/editTextHeight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Height"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@id/editTextWeight" />
-
-    <EditText
-        android:id="@+id/editTextIdNumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="ID Number"
-        app:layout_constraintTop_toBottomOf="@id/editTextHeight" />
-
-    <EditText
-        android:id="@+id/editTextEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@id/editTextIdNumber" />
-
-    <EditText
-        android:id="@+id/editTextPhoneNumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Phone Number"
-        android:inputType="phone"
-        app:layout_constraintTop_toBottomOf="@id/editTextEmail" />
-
-    <Button
-        android:id="@+id/buttonSubmit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        app:layout_constraintTop_toBottomOf="@id/editTextPhoneNumber" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
