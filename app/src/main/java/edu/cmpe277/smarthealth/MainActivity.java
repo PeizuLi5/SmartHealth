@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Toast;
@@ -11,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.cmpe277.smarthealth.databinding.ActivityMainBinding;
+import edu.cmpe277.smarthealth.databinding.AppBarMainBinding;
 import edu.cmpe277.smarthealth.services.SleepService;
 import edu.cmpe277.smarthealth.services.StepCounterService;
 
@@ -38,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private ActivityMainBinding binding;
     private static final int ACTIVITY_RECOGNITION_POST_NOTIFICATION_PERMISSION = 1;
+
+    private TextView userTextView;
 
     private List<String> permissions = new ArrayList<>();
 
@@ -62,11 +67,11 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-        TextView userTextView = navigationView.getHeaderView(0).findViewById(R.id.userTextView);
+        userTextView = navigationView.getHeaderView(0).findViewById(R.id.userTextView);
         userTextView.setText(sharedPreferences.getString("name", "User"));
       
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_settings)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -94,6 +99,18 @@ public class MainActivity extends AppCompatActivity {
             startStepCounterService();
             startSleepService();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        userTextView.setText(sharedPreferences.getString("name", "User"));
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        userTextView.setText(sharedPreferences.getString("name", "User"));
     }
 
     @Override
@@ -138,8 +155,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        menu.getItem(0).setOnMenuItemClickListener((item) -> {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return false;
+        });
         return true;
     }
 

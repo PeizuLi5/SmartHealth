@@ -36,6 +36,9 @@
             android:exported="true"
             android:theme="@style/Theme.SmartHealth"/>
 
+        <activity
+            android:name=".SettingsActivity" />
+
         <activity android:name=".ui.chat.ChatActivity" />
 
         <service

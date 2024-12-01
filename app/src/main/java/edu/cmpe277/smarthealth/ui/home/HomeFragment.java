@@ -130,20 +130,31 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        suggestionTextView.setText("");
+        getAiSuggestion();
+    }
+
     private void getAiSuggestion() {
-        String name = "Peizu";
-        int weight = 200;
-        int height = 180;
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+
+        String name = sharedPreferences.getString("name", "User");
+        int weight = sharedPreferences.getInt("weight", -1);
+        int height = sharedPreferences.getInt("height", -1);
 
         aiCall(name, weight, height);
     }
 
     private void aiCall(String name, int weight, int height) {
-        String prompt = "Hello, my name is " + name
-                + ", my weight is " + weight
-                + ", my height is " + height + ". Can you give me some health suggestion to me?\n"
+        String prompt = "Hello, my name is " + name + ". "
+                + (weight!= -1 ? "My weight is " + weight + ". " : "")
+                + (height!= -1 ? "My height is " + height + ". " : "")
+                + "Can you give me some health suggestion to me?\n"
                 + "I want the ouput to be something similar to the following:\n"
-                + "Hello <name>. According to your weight and height, your health condition is <your-consideration>.\n"
+                + "Hello <name>. "
+                + (height == -1 && weight == -1 ? "According to your weight and/or height, your health condition is <your-consideration>.\n" : "")
                 + "The following is my health suggestion: \n"
                 + "Based on the information your provided, the suggestion number of steps you should take is <your-steps-suggestion> steps. \n"
                 + "The number of hours that I recommend you to sleep is <your-hour-suggestion> hours. \n"

@@ -1,28 +1,43 @@
 package edu.cmpe277.smarthealth;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.cmpe277.smarthealth.databinding.ActivityLaunchBinding;
 
 public class LaunchActivity extends AppCompatActivity {
+    private static final int ACTIVITY_RECOGNITION_POST_NOTIFICATION_PERMISSION = 1;
     private ActivityLaunchBinding binding;
 
     private EditText editTextName, editTextDoB, editTextWeight, editTextHeight;
     private Button buttonSubmit;
 
-    private ChipGroup chipGroup;
+    private TextView setStepTextView;
+
+    private Chip fiveKChip, eightKChip, tenKChip;
 
     private SharedPreferences sharedPreferences;
+
+    private List<String> permissions = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,22 +46,47 @@ public class LaunchActivity extends AppCompatActivity {
         binding = ActivityLaunchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        if(ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+            permissions.add(android.Manifest.permission.ACTIVITY_RECOGNITION);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+
+        if(!permissions.isEmpty()){
+            ActivityCompat.requestPermissions(this,
+                    permissions.toArray(new String[0]),
+                    ACTIVITY_RECOGNITION_POST_NOTIFICATION_PERMISSION);
+        }
+
         sharedPreferences = getSharedPreferences("UserInfo", MODE_PRIVATE);
 
         editTextName = binding.editTextName;
         editTextDoB = binding.editTextDateOfBirth;
         editTextWeight = binding.editTextWeight;
         editTextHeight = binding.editTextHeight;
-        chipGroup = binding.chipGroup;
+        fiveKChip = binding.fiveKChip;
+        eightKChip = binding.eightKChip;
+        tenKChip = binding.tenKChip;
 
-        if(chipGroup.getCheckedChipId() == R.id.fiveKChip)
-            sharedPreferences.getInt("step", 5000);
-        else if(chipGroup.getCheckedChipId() == R.id.eightKChip)
-            sharedPreferences.getInt("step", 8000);
-        else if(chipGroup.getCheckedChipId() == R.id.tenKChip)
-            sharedPreferences.getInt("step", 10000);
-        else
-            sharedPreferences.getInt("step", 8000);
+        setStepTextView = binding.setStepTextView;
+
+        fiveKChip.setOnClickListener((l) ->{
+            setStepTextView.setText("Set your step goal: 5000 steps");
+        });
+
+        eightKChip.setOnClickListener((l) ->{
+            setStepTextView.setText("Set your step goal: 8000 steps");
+        });
+
+        tenKChip.setOnClickListener((l) ->{
+            setStepTextView.setText("Set your step goal: 10000 steps");
+        });
 
         buttonSubmit = binding.buttonSubmit;
 
@@ -55,9 +95,15 @@ public class LaunchActivity extends AppCompatActivity {
             if(!editTextWeight.getText().toString().isEmpty()){
                 editor.putInt("weight", Integer.parseInt(editTextWeight.getText().toString()));
             }
+            else
+                editor.putInt("weight", -1);
+
             if(!editTextHeight.getText().toString().isEmpty()){
                 editor.putInt("height", Integer.parseInt(editTextHeight.getText().toString()));
             }
+            else
+                editor.putInt("height", -1);
+
             if(!editTextName.getText().toString().isEmpty()){
                 editor.putString("name", editTextName.getText().toString());
             }
@@ -68,6 +114,16 @@ public class LaunchActivity extends AppCompatActivity {
             if(!editTextDoB.getText().toString().isEmpty()){
                 editor.putString("DoB", editTextDoB.getText().toString());
             }
+
+            if(fiveKChip.isChecked())
+                editor.putInt("step", 5000);
+            else if(eightKChip.isChecked())
+                editor.putInt("step", 8000);
+            else if(tenKChip.isChecked())
+                editor.putInt("step", 10000);
+            else
+                editor.putInt("step", 7000);
+
             editor.putBoolean("isLaunched", false);
             editor.apply();
 

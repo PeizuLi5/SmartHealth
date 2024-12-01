@@ -2,28 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/text_settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/settingsEditTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name"
-        app:layout_constraintTop_toBottomOf="@id/text_settings" />
+        android:layout_margin="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/settingsEditTextDob"
@@ -31,52 +22,96 @@
         android:layout_height="wrap_content"
         android:hint="Date of Birth"
         android:inputType="numberSigned"
+        android:layout_margin="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/settingsEditTextName" />
 
     <EditText
         android:id="@+id/settingsEditTextWeight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Weight"
+        android:hint="Weight (lbs)"
         android:inputType="number"
+        android:layout_margin="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/settingsEditTextDob" />
 
     <EditText
         android:id="@+id/settingsEditTextHeight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Height"
+        android:hint="Height (cm)"
         android:inputType="number"
+        android:layout_margin="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/settingsEditTextWeight" />
 
-    <EditText
-        android:id="@+id/settingsEditTextIdNumber"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/setStepTextView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="ID Number"
-        app:layout_constraintTop_toBottomOf="@id/settingsEditTextHeight" />
+        android:text="Set your step goal: "
+        android:textColor="?android:textColorPrimary"
+        android:layout_margin="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settingsEditTextHeight"/>
 
-    <EditText
-        android:id="@+id/settingsEditTextEmail"
-        android:layout_width="match_parent"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/settingChipGroup"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@id/settingsEditTextIdNumber" />
+        app:singleLine="true"
+        app:singleSelection="true"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@id/setStepTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <EditText
-        android:id="@+id/settingsEditTextPhoneNumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Phone Number"
-        android:inputType="phone"
-        app:layout_constraintTop_toBottomOf="@id/settingsEditTextEmail" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/settingFiveKChip"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:text="5000"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/settingEightKChip"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:text="8000"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/settingTenKChip"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:text="10000"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
 
     <Button
         android:id="@+id/buttonSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
-        app:layout_constraintTop_toBottomOf="@id/settingsEditTextPhoneNumber" />
+        android:layout_margin="20dp"
+        android:text="Submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settingChipGroup" />
+
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="Back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSave" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
