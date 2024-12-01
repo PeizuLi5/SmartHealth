@@ -59,7 +59,13 @@ public class MainActivity extends AppCompatActivity {
             NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
             if (navHostFragment != null) {
                 navController = navHostFragment.getNavController();
-                navController.navigate(R.id.nav_settings);
+                navController.navigate(R.id.nav_home);
+            }
+        } else {
+            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+            if (navHostFragment != null) {
+                navController = navHostFragment.getNavController();
+                navController.navigate(R.id.nav_intro);
             }
         }
 
