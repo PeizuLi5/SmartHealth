@@ -6,13 +6,17 @@ import android.content.Intent;
 
 import java.util.Calendar;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import edu.cmpe277.smarthealth.database.AppDB;
 import edu.cmpe277.smarthealth.database.SleepEntry;
+import edu.cmpe277.smarthealth.services.SleepService;
 import edu.cmpe277.smarthealth.services.StepCounterService;
 
 public class DateChangeReceiver extends BroadcastReceiver {
     private StepCounterService stepCounterService;
+    private SleepService sleepService;
 
     private AppDB appDB;
 
@@ -29,18 +33,19 @@ public class DateChangeReceiver extends BroadcastReceiver {
                     || Intent.ACTION_TIMEZONE_CHANGED.equals(action)) {
 
                 stepCounterService.onDateChanged();
-            }
 
-            if(Intent.ACTION_DATE_CHANGED.equals(action)){
-                appDB = AppDB.getInstance(context);
-                SleepEntry sleepEntry = new SleepEntry();
-                sleepEntry.date = getStartOfDay(System.currentTimeMillis() - 10000);
-                Random random = new Random();
-                int min = 6;
-                int max = 8;
-                sleepEntry.hours = random.nextInt(max - min + 1) + min;
-                sleepEntry.minutes = random.nextInt(60);
-                appDB.sleepDao().insertOrUpdate(sleepEntry);
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
+                executorService.execute(() -> {
+                    appDB = AppDB.getInstance(context);
+                    SleepEntry sleepEntry = new SleepEntry();
+                    sleepEntry.date = getStartOfDay(System.currentTimeMillis() - 10000);
+                    Random random = new Random();
+                    int min = 6;
+                    int max = 8;
+                    sleepEntry.hours = random.nextInt(max - min + 1) + min;
+                    sleepEntry.minutes = random.nextInt(60);
+                    appDB.sleepDao().insertOrUpdate(sleepEntry);
+                });
             }
         }
     }
