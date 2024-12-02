@@ -211,7 +211,12 @@ public class StepCounterService extends Service implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor == stepCountSensor) {
             int stepCount = (int) event.values[0];
+
             lastStepCount = stepCount;
+            if(stepCount <= 0){
+                initialStep = 0;
+                sharedPreferences.edit().putInt("initialStep", 0).apply();
+            }
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt("lastStepCount", lastStepCount);
@@ -223,6 +228,11 @@ public class StepCounterService extends Service implements SensorEventListener {
             }
 
             totalStepCurrentDay = stepCount - initialStep;
+            if(totalStepCurrentDay < 0){
+                initialStep = 0;
+                sharedPreferences.edit().putInt("initialStep", 0).apply();
+                totalStepCurrentDay = 0;
+            }
             saveTotalSteps();
 
             broadcastCurrentStep();
