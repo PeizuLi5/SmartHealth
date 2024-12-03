@@ -13,7 +13,8 @@
         android:layout_marginTop="87dp"
         android:ems="10"
         android:inputType="text"
-        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -21,8 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="68dp"
+        android:layout_marginStart="20dp"
         android:text="What are your current symptoms?"
-        app:layout_constraintStart_toStartOf="@+id/symptoms"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
@@ -32,7 +34,8 @@
         android:layout_marginTop="253dp"
         android:ems="10"
         android:inputType="text"
-        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -40,28 +43,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="234dp"
+        android:layout_marginStart="20dp"
         android:text="When did these symptoms start?"
-        app:layout_constraintStart_toStartOf="@+id/whenSymptomsStarts"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="375dp"
         android:layout_height="60dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="401dp"
         android:text="Have you been expose to anything that could heave caused this? Are there any factor that seem to worsen the symptoms?"
-        app:layout_constraintStart_toStartOf="@+id/issue"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/issue"
         android:layout_width="377dp"
         android:layout_height="63dp"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="461dp"
         android:ems="10"
         android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -70,15 +74,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="156dp"
-        android:layout_marginTop="619dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="161dp"
-        android:layout_marginBottom="64dp"
         android:text="Submit"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/issue" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
